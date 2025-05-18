@@ -2,6 +2,10 @@
     font-family: "Helvetica", "Arial", sans-serif;
 }
 
+body {
+    background-color: #EDECEC;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -16,19 +20,51 @@
     flex-direction: column;
     width: 800px;
     height: 800px;
+    border-radius: 8px;
+    overflow: clip;
+    outline: 1px solid #2F2F2F;
+    margin-top: 40px;
 }
 
 .buttonContainer{
     display: flex;
-    width: 100px;
+    width: 100%;
     max-width: 800px;
+    gap: 24px;
+    padding: 24px;
+}
+
+.selectedToggle,
+.unselectedToggle {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    width: 100%;
+    font: 500 16px/32px "Helvetica", sans-serif;
+    border: 1px solid #AAAAAA;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+.selectedToggle{
+    color: white;
+    background-color: #2F2F2F;
+}
+
+.unselectedToggle{
+    color: #717171;
+    background: white;
+}
+
+.unselectedToggle:hover{
+    background-color: #E4E4E4;
 }
 
 .changeGridButton{
     cursor: pointer;
-    border-radius: 12px;
+    border-radius: 16px;
     max-width: 768px;
-    font: 700 20px/32px "Helvetica", sans-serif;
+    font: 500 16px/32px "Helvetica", sans-serif;
     padding: 16px;
     background-color: #2F2F2F;
     color: white;
@@ -36,6 +72,10 @@
     justify-content: center;
     width: 100%;
     outline: 1px solid #2F2F2F;
+}
+
+.changeGridButton:hover{
+    background-color: #1B1B1B;
 }
 
 
