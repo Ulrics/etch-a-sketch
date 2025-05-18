@@ -1,4 +1,5 @@
 const container = document.querySelector(".sketchContainer");
+let currentMode = "black";
 
 function buildGrid(size){
     for(let r = 0; r < size; r++){
@@ -12,6 +13,14 @@ function buildGrid(size){
     }
     }
 }
+
+function randomRGB() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 
 buildGrid(16);
 let boxes = document.querySelectorAll(".defaultStateBox");
@@ -27,10 +36,12 @@ boxes.forEach((box) => {
 */
 
 boxes.forEach((box) => {
-    box.addEventListener("mouseover", () => {
+    let black = () => {
         box.classList.remove("defaultStateBox");
         box.classList.add("coloredStateBox");
-    });
+    };
+
+    box.addEventListener("mouseover", black);
 });
 
 const changeGrid = document.querySelector(".changeGridButton");
@@ -54,3 +65,26 @@ changeGrid.addEventListener("click", () =>{
         alert("Error: greater than 100 or not a single integer.");
     }
 })
+
+const colorItBlack = document.getElementById("black");
+const colorItRainbow = document.getElementById("rainbow");
+const colorItTint = document.getElementById("tint");
+
+
+colorItRainbow.addEventListener("click",() => {
+    console.log("rainbow triggered");
+    colorItRainbow.classList.remove("unselectedToggle");
+    colorItRainbow.classList.add("selectedToggle");
+    colorItBlack.classList.remove("selectedToggle");
+    colorItBlack.classList.add("unselectedToggle");
+    colorItTint.classList.remove("selectedToggle");
+    colorItTint.classList.add("unselectedToggle");
+
+    boxes.forEach((box) =>{
+        box.removeEventListener("mouseover", black)
+        box.addEventListener("mouseover", () =>{
+            box.style.backgroundColor = randomRGB();
+        })
+    })
+})
+
