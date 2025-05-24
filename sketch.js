@@ -1,5 +1,4 @@
 const container = document.querySelector(".sketchContainer");
-let currentMode = "black";
 
 function buildGrid(size){
     for(let r = 0; r < size; r++){
@@ -8,10 +7,22 @@ function buildGrid(size){
         container.appendChild(row);
         for(let i = 0; i < size; i++){
             const box = document.createElement("div");
-            box.classList.add("defaultStateBox");
-            row.appendChild(box);
+            box.classList.add("gridBox");
+            row.appendChild(box);                           
     }
     }
+    const boxes = document.querySelectorAll(".gridBox");
+        boxes.forEach((box) => {
+            if (currentMode === "black"){
+                box.addEventListener("mouseover", black);
+            }
+            else if(currentMode === "rainbow"){
+                box.addEventListener("mouseover", rainbow);
+            }
+            else if(currentMode === "tint"){
+                box.addEventListener("mouseover", tint);
+            }
+        });
 }
 
 function randomRGB() {
@@ -21,50 +32,65 @@ function randomRGB() {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-
-buildGrid(16);
-let boxes = document.querySelectorAll(".defaultStateBox");
-
-/*
-function colorItBlack(colorItem){
-    colorItem.classList.remove("defaultStateBox");
-    colorItem.classList.add("coloredStateBox");
+function black(){
+    this.style.backgroundColor = "black";
 }
-boxes.forEach((box) => {
-    box.addEventListener("mouseover", () => colorItBlack(box));
-});
-*/
 
-boxes.forEach((box) => {
-    let black = () => {
-        box.classList.remove("defaultStateBox");
-        box.classList.add("coloredStateBox");
-    };
+function rainbow(){
+    this.style.backgroundColor = randomRGB();
+}
 
-    box.addEventListener("mouseover", black);
-});
+function tint(){
+    let currentOpacity = parseFloat(this.dataset.opacity) || 0;
+    if (currentOpacity < 1){
+        currentOpacity += 0.1;
+        this.dataset.opacity = currentOpacity;
+        this.style.backgroundColor = `rgba(0, 0, 0, ${currentOpacity})`;
+    }
+}
 
-const changeGrid = document.querySelector(".changeGridButton");
-changeGrid.addEventListener("click", () =>{
+function changeStyle(newStyle){
+    const boxes = document.querySelectorAll(".gridBox");
+    boxes.forEach((box) =>{
+            box.removeEventListener("mouseover", black);
+            box.removeEventListener("mouseover", rainbow);
+            box.removeEventListener("mouseover", tint);
+            box.addEventListener("mouseover", newStyle);
+        });
+}
+
+function changeGrid(){
     let newGrid = prompt("Enter new grid size (max 100)", 16);
+    
     if (newGrid < 101){
         const rowList = document.querySelectorAll(".row");
         rowList.forEach((row) => {
             row.remove();
-        })
+        });
         buildGrid(newGrid);
-        let boxes = document.querySelectorAll(".defaultStateBox");
+        const boxes = document.querySelectorAll(".gridBox");
         boxes.forEach((box) => {
-            box.addEventListener("mouseover", () => {
-                box.classList.remove("defaultStateBox");
-                box.classList.add("coloredStateBox");
-            });
+            if (currentMode === "black"){
+                box.addEventListener("mouseover", black);
+            }
+            else if(currentMode === "rainbow"){
+                box.addEventListener("mouseover", rainbow);
+            }
+            else if(currentMode === "tint"){
+                box.addEventListener("mouseover", tint);
+            }
         });
     }
     else{
         alert("Error: greater than 100 or not a single integer.");
     }
-})
+}
+
+let currentMode = "black";
+buildGrid(16);
+
+const changeGridButton = document.querySelector(".changeGridButton");
+changeGridButton.addEventListener("click", changeGrid);
 
 const colorItBlack = document.getElementById("black");
 const colorItRainbow = document.getElementById("rainbow");
@@ -79,12 +105,30 @@ colorItRainbow.addEventListener("click",() => {
     colorItBlack.classList.add("unselectedToggle");
     colorItTint.classList.remove("selectedToggle");
     colorItTint.classList.add("unselectedToggle");
+    currentMode = "rainbow";
+    changeStyle(rainbow);
+});
 
-    boxes.forEach((box) =>{
-        box.removeEventListener("mouseover", black)
-        box.addEventListener("mouseover", () =>{
-            box.style.backgroundColor = randomRGB();
-        })
-    })
-})
+colorItBlack.addEventListener("click", () =>{
+    console.log("black triggered");
+    colorItBlack.classList.remove("unselectedToggle");
+    colorItBlack.classList.add("selectedToggle");
+    colorItRainbow.classList.remove("selectedToggle");
+    colorItRainbow.classList.add("unselectedToggle");
+    colorItTint.classList.remove("selectedToggle");
+    colorItTint.classList.add("unselectedToggle");
+    currentMode = "black";
+    changeStyle(black);
+});
 
+colorItTint.addEventListener("click", () =>{
+    console.log("tint triggered");
+    colorItTint.classList.remove("unselectedToggle");
+    colorItTint.classList.add("selectedToggle");
+    colorItRainbow.classList.remove("selectedToggle");
+    colorItRainbow.classList.add("unselectedToggle");
+    colorItBlack.classList.remove("selectedToggle");
+    colorItBlack.classList.add("unselectedToggle");
+    currentMode = "tint";
+    changeStyle(tint);
+});
